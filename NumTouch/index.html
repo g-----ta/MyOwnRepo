@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>数字タッチゲーム</title>
+	<link rel="stylesheet" href="style.css">
+<!-- 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
+</head>
+
+<body id="body">
+	<h1 id="explain">1から順にタッチ！</h1>
+	<p>Time: <span id="time">0.0</span>sec.</p>
+	<div id="board"></div>
+	<div><button class="button" id="timerStart">Start!</button></div>
+	<div class="top" class="col-md-12">
+		<div id="top5"></div>
+		<div id="top4"></div>
+		<div id="top3"></div>
+	</div>
+
+	<script>
+	(function() {	
+		var bestValue5 = 60,
+			bestValue4 = 60,
+			bestValue3 = 60,
+			SIZE = 0,
+			currentNum,
+			timer, 
+			startTime,
+			isPlaying = false,
+			audioTouch = new Audio("sounds/se1.wav"),
+			audioMis = new Audio("sounds/bomb3.wav"),
+			audioBack = new Audio("sounds/game_maoudamashii_1_battle33.mp3"),
+			audioResult = new Audio("sounds/game_maoudamashii_7_event43.mp3");
+				
+		document.getElementById('timerStart').onclick = function() {
+			do {
+				SIZE = window.prompt("sizeを3~5で入力して下さい\ne.g. 3*3の場合は3と入力して下さい");
+				if(SIZE == null) exit();
+			}while(SIZE > 5 || SIZE < 3);
+			document.getElementById('body').style.backgroundColor = "#ffffff";	
+			timerStart();
+		}
+	
+		function timerStart() {			
+			audioBack.currentTime = 0;
+			audioBack.play();
+			audioBack.volume = 0.3;
+			initBoard();
+			document.getElementById('timerStart').innerHTML = 'Restart!';
+			currentNum = 1;
+			startTime = (new Date()).getTime();
+			if (!isPlaying) {
+				isPlaying = true;
+				runTimer();
+			}
+		}
+		
+		function initBoard() {
+			var buttons = [];
+			var board;
+			var button;
+			
+			for (var i=0; i < SIZE * SIZE; i++) {
+				buttons.push(createButton(i));
+			}
+		
+			board = document.getElementById('board');
+			while (board.firstChild) {
+				board.removeChild(board.firstChild);
+			}
+			
+			while(buttons.length) {	
+				button = buttons.splice(Math.floor(Math.random() * buttons.length), 1);
+				board.appendChild(button[0]);
+				if (buttons.length % SIZE == 0) {
+					board.appendChild(document.createElement('br'));
+				}
+			}
+		}
+		
+		function createButton(num) {
+			var color = Math.floor(Math.random() * 360);
+			var btn;
+			btn = document.createElement('input');
+			btn.type = 'button';
+			btn.value = num+1;
+			btn.id = "return";
+			btn.style.width = "80px";
+			btn.style.height = "80px";
+			btn.style.margin = "1px";
+			btn.style.padding = "10px 10px";
+			btn.style.backgroundColor = "hsl(" + color + ", 80%, 70%)";
+			btn.onclick = function() {
+				if (this.value == currentNum) {
+					this.disabled = true;
+					this.style.backgroundColor = "#ccc";
+					this.style.color = "#eee";
+					audioTouch.play();
+					audioTouch.volume = 0.5;
+					currentNum++;
+				}else {
+					audioMis.play();
+					audioMis.volume = 0.5;
+				}
+				if (currentNum == SIZE * SIZE + 1) {
+					clearTimeout(timer);
+					isPlaying = false;
+					audioBack.pause();
+					resultDisp();
+				}		
+			};
+			return btn;
+		}		
+			
+		function resultDisp() {
+			audioResult.currentTime = 0;
+			audioResult.play();
+			document.getElementById('body').style.backgroundColor = "#ccc";
+			time = document.getElementById('time').innerHTML;
+			alert('Your Score: ' + time + "sec.");
+///*
+			if(SIZE == 5) {
+				if(bestValue5 > time) {
+					bestValue5 = time;
+					document.getElementById('top5').innerHTML = "Best Record in 25 panels<br>" + time + "sec.";
+				}else{
+					document.getElementById('top5').innerHTML = "Best Record in 25 panels<br>" + bestValue5 + "sec.";
+				}
+			}
+			if(SIZE == 4) {
+				if(bestValue4 > time) {
+					bestValue4 = time;
+					document.getElementById('top4').innerHTML = "Best Record in 16 panels<br>" + time + "sec.";
+				}else{
+					document.getElementById('top4').innerHTML = "Best Record in 16 panels<br>" + bestValue4 + "sec.";
+				}
+			}
+			if(SIZE == 3) {
+				if(bestValue3 > time) {
+					bestValue3 = time;
+					document.getElementById('top3').innerHTML = "Best Record in 9 panels<br>" + time + "sec.";
+				}else{
+					document.getElementById('top3').innerHTML = "Best Record in 9 panels<br>" + bestValue3 + "sec.";
+				}
+			}						
+			
+//*/			
+			audioResult.pause();
+
+
+		}		
+		
+				
+		function runTimer() {
+			document.getElementById('time').innerHTML = (((new Date()).getTime() - startTime)/1000).toFixed(1);
+			timer = setTimeout(function() {
+				runTimer();
+			}, 100);
+		}
+	
+	})();
+	</script>
+</body>
+</html>

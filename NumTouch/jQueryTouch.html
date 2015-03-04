@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<title>数字タッチゲーム</title>
+	<link rel="stylesheet" href="style.css">
+<!--	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+-->
+</head>
+
+<body id="body">
+	<h1 id="explain">1から順にタッチ！</h1>
+	<p>Time: <span id="time">0.0</span>sec.</p>
+	<div id="board"></div>
+	<div><button class="button" id="timerStart">Start!</button></div>
+	<div id="pre"></div>
+	<div class="top">
+		<div id="top3"></div>
+		<div id="top4"></div>
+		<div id="top5"></div>
+	</div>
+	<div id="tweet"></div>
+
+	<script>
+	$(function() {	
+		var bestValue5 = 60,
+			bestValue4 = 60,
+			bestValue3 = 60,
+			SIZE = 0,
+			currentNum,
+			timer, 
+			startTime,
+			isPlaying = false
+			audioTouch = new Audio("sounds/se1.wav"),
+			audioMis = new Audio("sounds/bomb3.wav"),
+			audioBack = new Audio("sounds/game_maoudamashii_1_battle33.mp3"),
+			audioResult = new Audio("sounds/game_maoudamashii_7_event43.mp3");
+		
+/*
+		if(($('#top3').text(localStorage.getItem('top3'))) || ($('#top4').text(localStorage.getItem('top4'))) || ($('#top5').text(localStorage.getItem('top5')))) {
+			$('#pre').text('前回のプレーヤーの記録です');
+		}
+*/
+	
+		if(localStorage.getItem('top3')) {
+			$('#top3').text(localStorage.getItem('top3'));
+			bestValue3 = localStorage.getItem('top3');
+//			localStorage.removeItem('top3')
+		}
+		if(localStorage.getItem('top4')) {
+			$('#top4').text(localStorage.getItem('top4'));
+			bestValue4 = localStorage.getItem('top4');
+//			localStorage.removeItem('top4')
+		}	
+		if(localStorage.getItem('top5')) {
+			$('#top5').text(localStorage.getItem('top5'));
+			bestValue5 = localStorage.getItem('top5');
+//			localStorage.removeItem('top5')
+		}		
+		$('#timerStart').click(function() {
+			do {
+				SIZE = window.prompt("sizeを3~5で入力して下さい\ne.g. 3*3の場合は3と入力して下さい");
+				if(SIZE == null) exit();
+			}while(SIZE > 5 || SIZE < 3);
+			$('body').css('backgroundColor','#ffffff');	
+			timerStart();
+		});
+	
+		function timerStart() {			
+/*			audioBack.currentTime = 0;
+			audioBack.play();
+			audioBack.volume = 0.3;
+*/			initBoard();
+			$('#timerStart').text('Restart!');
+			currentNum = 1;
+			startTime = (new Date()).getTime();
+			if (!isPlaying) {
+				isPlaying = true;
+				runTimer();
+			}
+		}
+		
+		function initBoard() {
+			var buttons = [];
+			var board;
+			var button;
+			
+			for (var i=0; i < SIZE * SIZE; i++) {
+				buttons.push(createButton(i));
+			}
+		
+			board = $('#board').empty();
+			while (board.firstChild) {
+				board.remove(board.firstChild);
+			}
+			
+			while(buttons.length) {	
+				button = buttons.splice(Math.floor(Math.random() * buttons.length), 1);
+				board.append(button[0]);
+				if (buttons.length % SIZE == 0) {
+					board.append($('<br>'));
+				}
+			}
+		}
+		
+		function createButton(num) {
+			var color = Math.floor(Math.random() * 360);
+			var btn;
+			btn = $('<input>');
+			btn.type = 'button';
+			btn.val(num+1);
+//			btn.id = "return";
+			btn.css({width: "80px", height: "80px", margin: "1px", padding: "10px", backgroundColor: "hsl(" + color + ", 80%, 70%)"});
+			btn.click(function() {
+				if (this.value == currentNum) {
+					this.disabled = true;
+					this.style.backgroundColor =  "#ccc";
+					this.style.color = "#eee";
+//					audioTouch.play();
+//					audioTouch.volume = 0.5;
+					currentNum++;
+//				}else {
+//					audioMis.play();
+//					audioMis.volume = 0.5;
+				}
+				if (currentNum == SIZE * SIZE + 1) {
+					clearTimeout(timer);
+					isPlaying = false;
+					audioBack.pause();
+					resultDisp();
+				}		
+			});
+			return btn;
+		}		
+			
+		function resultDisp() {
+//			audioResult.currentTime = 0;
+//			audioResult.play();
+			$('body').css('backgroundColor', "#ccc");
+			time = $('#time').text();
+			alert('Your Score: ' + time + "sec.");
+			if(confirm('tweetしますか？')) {
+				var name = prompt('あなたの名前は何ですか？');
+				var result = name + "さんのjavaScriptのsampleゲームでの成績は" + time + "秒です！";
+				var tweetLink = '<a href="https://twitter.com/intent/tweet?text='+ encodeURIComponent(result) + '&hashtags=javaScript &hashtags=game">tweetする</a>';
+				alert('下の「tweetする」ボタンを押して下さい');
+				$('#tweet').html(tweetLink);
+			}
+			if(SIZE == 5) {
+				if(bestValue5 > time) {
+					bestValue5 = time;
+					$('#top5').text("Best Record in 25 panels " + time + "sec.");
+					localStorage.setItem('top5',$('#top5').text());
+				}else{
+					$('#top5').text("Best Record in 25 panels " + bestValue5 + "sec.");
+				}
+			}
+			if(SIZE == 4) {
+				if(bestValue4 > time) {
+					bestValue4 = time;
+					$('#top4').text("Best Record in 16 panels " + time + "sec.");
+					localStorage.setItem('top4',$('#top4').text());
+				}else{
+					$('#top4').text("Best Record in 16 panels " + bestValue4 + "sec.");
+				}
+			}
+			if(SIZE == 3) {
+				if(bestValue3 > time) {
+					bestValue3 = time;
+					$('#top3').text("Best Record in 9 panels " + time + "sec.");
+					localStorage.setItem('top3',$('#top3').text());
+				}else{
+					$('#top3').text("Best Record in 9 panels " + bestValue3 + "sec.");
+				}
+			}												
+			audioResult.pause();
+		}		
+		
+				
+		function runTimer() {
+			$('#time').text((((new Date()).getTime() - startTime)/1000).toFixed(1));
+			timer = setTimeout(function() {
+				runTimer();
+			}, 100);
+		}
+	
+	});
+	</script>
+</body>
+</html>

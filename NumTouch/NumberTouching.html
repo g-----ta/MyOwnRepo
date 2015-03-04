@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>practice</title>
+</head>
+<body>
+	<h1>default設定</h1>
+	<p>Time: <span id="sec">0.0</span>sec.</p>
+	<div id="board"></div>
+	<div><input type="button" value="START!" id="start"></div>
+	<script>
+		var panels = [],
+			SIZE = 3,
+			panel,
+			startTime,
+			timer,
+			board,
+			currentNum = 1;	
+	
+		document.getElementById('start').onclick = function() {
+			startTime = new Date;
+			start();
+		}
+		
+		function start() {
+			initBoard();
+			runTimer();	
+		}
+		
+		function initBoard() {
+			for(var i=0; i<SIZE*SIZE; i++) {	
+				panels.push(createPanels(i));
+			}		
+			board = document.getElementById('board');
+			while(panels.length) {
+				panel = panels.splice(Math.floor(Math.random()*panels.length), 1);
+				board.appendChild(panel[0]);
+			}
+		}
+		
+		function createPanels(i) {
+			var pnl = document.createElement('input');
+			pnl.type = "button";
+			pnl.value = i+1;
+			pnl.onclick = function() {
+				if(currentNum == i+1) {
+					this.disabled = true;
+					currentNum++;
+				}
+				if(currentNum == SIZE * SIZE + 1) {
+					clearTimeout(timer);
+					resultDisp();
+				}
+			}
+			return pnl;
+		}
+		
+		function resultDisp() {
+			alert("Your Score is: " + document.getElementById('sec').innerHTML + "sec.");
+		}
+		
+		function runTimer() {
+			document.getElementById('sec').innerHTML = (((new Date) - startTime)/1000).toFixed(1);
+			timer = setTimeout(function() {
+				runTimer();
+			} , 50);
+		}
+		
+	
+	</script>
+</body>
+</html>
