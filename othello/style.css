@@ -1,0 +1,36 @@
+#main {
+  text-align: center;
+}
+
+#game-board > table {
+  margin: 0 auto;
+}
+
+#game-board > table th {
+  margin: 0;
+  padding: 0.125em 0.25em;
+  line-height: 100%;
+}
+
+#game-board > table .mas {
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  background-color: #090;
+  border: 1px solid black;
+}
+
+#game-board > table .mas > .circle {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  border-radius: 1em;
+}
+
+#game-board > table .mas.white > .circle {
+  background: #fff;
+}
+
+#game-board > table .mas.black > .circle {
+  background-color: #000;
+}
