@@ -25,6 +25,7 @@
   width: 2em;
   height: 2em;
   border-radius: 1em;
+  margin: 0.25em;
 }
 
 #game-board > table .mas.white > .circle {
