@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>最高の留学になるように</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>	
+	<script type="text/javascript" src="jquery.balloon.min.js"></script>
+	
+	<style>
+	body {
+		font-family: 'Helvetica-Light' 'Meiryo' sans-serif;
+	}
+	#CDT{
+	 font-size: 26px;
+	 float: right;
+	 color: #fac90a;
+	}
+	#CDT .day{
+	 font-size: 48px;
+	}	
+	.sample:hover {
+		opacity: 0.8;
+	}
+	</style>
+	<a href="#" class="sample" title="バルーンの練習！！<br>"><img src="sample.jpg" alt="sample" width="600" height="600"></a>
+	<div id="CDT"></div>
+</head>
+<body>
+	<script>
+	$(function() {
+		$('.sample').balloon({
+			position: "right", offsetX: -600, offsetY: 300,
+			tipSize: 24,
+			showDuration: 500,
+			hideDuration: 0,
+			css: {
+			    border: 'solid 4px #5baec0',
+			    zIndex: '1',
+			    borderRadius: '240px',
+			    padding: '10px',
+			    fontSize: '150%',
+			    fontWeight: 'bold',
+			    lineHeight: '3',
+			    backgroundColor: '#fff',
+			    color: '#333',
+			},
+		});
+		$('.sample').click(function() {
+			CDT().fadeIn("slow");
+		})
+	});
+
+	function CountdownTimer(elm,tl,mes) {
+		this.initialize.apply(this,arguments);
+	}
+	CountdownTimer.prototype = {
+	 initialize:function(elm,tl,mes) {
+	  this.elem = document.getElementById(elm);
+	  this.tl = tl;
+	  this.mes = mes;
+	 },
+	 
+	 countDown:function() {
+	  var timer = '';
+	  var today = new Date();
+	  var day = Math.floor((this.tl-today)/(24*60*60*1000));
+	  var hour = Math.floor(((this.tl-today)%(24*60*60*1000))/(60*60*1000));
+	  var min = Math.floor(((this.tl-today)%(24*60*60*1000))/(60*1000))%60;
+	  var sec = Math.floor(((this.tl-today)%(24*60*60*1000))/1000)%60%60;
+	  var milli = Math.floor(((this.tl-today)%(24*60*60*1000))/10)%100;
+	  var me = this;
+	
+	  if((this.tl - today) > 0 ) {
+	   if (day) timer += '<span class="day">' + day + '日</span><br>';
+	   if (hour) timer += '<span class="hour">' + hour + '時間</span>';
+	   timer += '<span class="min">' + this.addZero(min) + '分</span><span class="sec">' + this.addZero(sec)+'秒</span><span class="milli">' + this.addZero(milli) + '</span>';
+	   this.elem.innerHTML = timer;
+	   tid = setTimeout(function() {
+	   me.countDown();
+	   },10 );
+	  } else {
+	   this.elem.innerHTML = this.mes;
+	   return;
+	  }
+	 },
+	 
+	 addZero:function(num){
+		 return ('0'+num).slice(-2);
+	 }
+	}
+	
+	function CDT(){
+	 var tl = new Date('2015/12/22 00:00:00');
+	 var timer = new CountdownTimer('CDT',tl,'終了しました');
+	 timer.countDown();
+	}
+	
+	</script>
+</body>
+</html>
