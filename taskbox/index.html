@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>taskbox</title>
+
+    <!-- <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <div id="items">
+      <label><input type="checkbox">読書</label><br>
+      <label><input type="checkbox">キクたん</label><br>
+      <label><input type="checkbox">SPI</label><br>
+    </div>
+  </head>
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script>
+      $(function() {
+        var $pb = $('.progress-bar');
+        $("#items :checkbox").click(function() {
+          if($("#items :checked").length == 1) {
+            $pb.attr({
+              'style':'width:33%;',
+              'class':'progress-bar'  
+            }).html("33%");
+            } else if($("#items :checked").length == 2) {
+            $pb.attr({
+              'style':'width:66%;',
+              'class':'progress-bar'  
+            }).html("66%");
+            } else if($("#items :checked").length == 3) {
+            $pb.attr({
+              'style':'width:100%;',
+              'class':'progress-bar progress-bar-striped active'  
+            }).html("100%");
+            } else {
+            $pb.attr({
+              'style':'width:0%;',
+              'class':'progress-bar'  
+            }).html("0%");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

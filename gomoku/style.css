@@ -1,0 +1,38 @@
+#main {
+  text-align: center;
+
+}
+
+#game-board > table {
+  margin: 0 auto;
+}
+
+#game-board > table th {
+  margin: 0;
+  padding: 0.125em 0.25em;
+  line-height: 100%;
+}
+
+#game-board > table .cell {
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  border: 1px solid black;
+  background-color: #663300;
+}
+
+#game-board > table .cell > .circle {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  border-radius; 1em
+  margin: 0.25em;
+}
+
+#game-board > table .cell.white > .circle {
+  background-color: #fff;
+}
+
+#mage-board > table .cell.black > .circle {
+  background-color: #000;
+}
